@@ -69,7 +69,7 @@ export const ProductList = ({ children }: PropsWithChildren) => {
           size="large"
           onClick={() => {
             return go({
-              to: `${createUrl('products')}`,
+              to: `${createUrl('watches')}`,
               query: {
                 to: pathname,
               },

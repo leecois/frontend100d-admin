@@ -55,7 +55,7 @@ export const dataProvider = (
     const total = +headers['x-total-count'];
 
     return {
-      data: data.data,
+      data,
       total: total || data.length,
     };
   },
@@ -113,7 +113,7 @@ export const dataProvider = (
     const { data } = await httpClient[requestMethod](url, { headers });
 
     return {
-      data: data.data,
+      data,
     };
   },
 

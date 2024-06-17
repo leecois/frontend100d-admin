@@ -1,4 +1,4 @@
 export * from './infoList';
 export * from './infoSummary';
-export * from './orderHistory';
+export * from './review-table';
 export * from './userStatus';

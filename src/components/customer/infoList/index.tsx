@@ -1,8 +1,4 @@
-import {
-  EnvironmentOutlined,
-  PhoneOutlined,
-  UserOutlined,
-} from '@ant-design/icons';
+import { EnvironmentOutlined, UserOutlined } from '@ant-design/icons';
 import { useTranslate } from '@refinedev/core';
 import { Card, List, Typography } from 'antd';
 import React from 'react';
@@ -20,46 +16,46 @@ export const CustomerInfoList = ({ customer }: Props) => {
   return (
     <Card
       bordered={false}
-      styles={{
-        body: {
-          padding: '0 16px 0 16px',
-        },
+      bodyStyle={{
+        padding: '0 16px 0 16px',
       }}
     >
       <List
         itemLayout="horizontal"
         dataSource={[
           {
-            title: t('customers.fields.phone'),
-            icon: <PhoneOutlined />,
-            value: <Typography.Text>{customer?.phone}</Typography.Text>,
-          },
-          {
-            title: t('users.fields.address'),
-            icon: <EnvironmentOutlined />,
-            value: <Typography.Text>{customer?.address}</Typography.Text>,
-          },
-          {
             title: t('users.fields.status.label'),
             icon: <UserOutlined />,
-            value: <UserStatus value={customer?.status ?? 0} />,
+            value: <UserStatus value={customer?.isAdmin || false} />,
+          },
+          // Add other fields as necessary
+          {
+            title: t('users.fields.email'),
+            icon: <EnvironmentOutlined />,
+            value: <Typography.Text>{customer?.email}</Typography.Text>,
+          },
+          {
+            title: t('users.fields.YOB'),
+            icon: <EnvironmentOutlined />,
+            value: <Typography.Text>{customer?.YOB}</Typography.Text>,
+          },
+          {
+            title: t('users.fields.membername.label'),
+            icon: <EnvironmentOutlined />,
+            value: <Typography.Text>{customer?.membername}</Typography.Text>,
           },
         ]}
-        renderItem={(item) => {
-          return (
-            <List.Item>
-              <List.Item.Meta
-                avatar={item.icon}
-                title={
-                  <Typography.Text type="secondary">
-                    {item.title}
-                  </Typography.Text>
-                }
-                description={item.value}
-              />
-            </List.Item>
-          );
-        }}
+        renderItem={(item) => (
+          <List.Item>
+            <List.Item.Meta
+              avatar={item.icon}
+              title={
+                <Typography.Text type="secondary">{item.title}</Typography.Text>
+              }
+              description={item.value}
+            />
+          </List.Item>
+        )}
       />
     </Card>
   );

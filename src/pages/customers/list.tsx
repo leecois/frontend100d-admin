@@ -1,11 +1,5 @@
 import { EyeOutlined, SearchOutlined } from '@ant-design/icons';
-import {
-  ExportButton,
-  FilterDropdown,
-  getDefaultSortOrder,
-  List,
-  useTable,
-} from '@refinedev/antd';
+import { ExportButton, FilterDropdown, List, useTable } from '@refinedev/antd';
 import type { HttpError } from '@refinedev/core';
 import {
   getDefaultFilter,
@@ -14,20 +8,11 @@ import {
   useNavigation,
   useTranslate,
 } from '@refinedev/core';
-import {
-  Avatar,
-  Button,
-  Input,
-  InputNumber,
-  Select,
-  Table,
-  theme,
-  Typography,
-} from 'antd';
+import { Button, Input, InputNumber, Table, theme, Typography } from 'antd';
 import type { PropsWithChildren } from 'react';
 import { useLocation } from 'react-router-dom';
 
-import { PaginationTotal, UserStatus } from '../../components';
+import { PaginationTotal } from '../../components';
 import type { IUser, IUserFilterVariables } from '../../interfaces';
 
 export const CustomerList = ({ children }: PropsWithChildren) => {
@@ -45,7 +30,7 @@ export const CustomerList = ({ children }: PropsWithChildren) => {
     filters: {
       initial: [
         {
-          field: 'name',
+          field: 'membername',
           operator: 'contains',
           value: '',
         },
@@ -54,7 +39,7 @@ export const CustomerList = ({ children }: PropsWithChildren) => {
     sorters: {
       initial: [
         {
-          field: 'id',
+          field: '_id',
           order: 'desc',
         },
       ],
@@ -68,12 +53,13 @@ export const CustomerList = ({ children }: PropsWithChildren) => {
     pageSize: 50,
     maxItemCount: 50,
     mapData: (item) => ({
-      id: item.id,
-      name: item.name,
+      id: item._id,
+      membername: item.membername,
       email: item.email,
-      phone: item.phone,
-      address: item.address,
-      status: item.status,
+      YOB: item.YOB,
+      isAdmin: item.isAdmin,
+      createdAt: item.createdAt,
+      updatedAt: item.updatedAt,
     }),
   });
 
@@ -86,18 +72,18 @@ export const CustomerList = ({ children }: PropsWithChildren) => {
     >
       <Table
         {...tableProps}
-        rowKey="id"
+        rowKey="_id"
         scroll={{ x: true }}
         pagination={{
           ...tableProps.pagination,
           showTotal: (total) => (
-            <PaginationTotal total={total} entityName="users" />
+            <PaginationTotal total={total} entityName="members" />
           ),
         }}
       >
         <Table.Column
-          key="id"
-          dataIndex="id"
+          key="_id"
+          dataIndex="_id"
           title="ID #"
           render={(value) => (
             <Typography.Text style={{ whiteSpace: 'nowrap' }}>
@@ -111,7 +97,7 @@ export const CustomerList = ({ children }: PropsWithChildren) => {
               }}
             />
           )}
-          defaultFilteredValue={getDefaultFilter('id', filters, 'eq')}
+          defaultFilteredValue={getDefaultFilter('_id', filters, 'eq')}
           filterDropdown={(props) => (
             <FilterDropdown {...props}>
               <InputNumber
@@ -123,17 +109,14 @@ export const CustomerList = ({ children }: PropsWithChildren) => {
           )}
         />
         <Table.Column
-          align="center"
-          key="picture"
-          dataIndex="picture"
-          title={t('users.fields.picture')}
-          render={(value) => <Avatar src={value} />}
-        />
-        <Table.Column
-          key="name"
-          dataIndex="name"
+          key="membername"
+          dataIndex="membername"
           title={t('users.fields.name')}
-          defaultFilteredValue={getDefaultFilter('name', filters, 'contains')}
+          defaultFilteredValue={getDefaultFilter(
+            'membername',
+            filters,
+            'contains',
+          )}
           filterDropdown={(props) => (
             <FilterDropdown {...props}>
               <Input
@@ -158,58 +141,25 @@ export const CustomerList = ({ children }: PropsWithChildren) => {
           )}
         />
         <Table.Column
-          key="phone"
-          dataIndex="phone"
-          title={t('users.fields.phone')}
-          defaultFilteredValue={getDefaultFilter('phone', filters, 'eq')}
+          key="YOB"
+          dataIndex="YOB"
+          title={t('users.fields.yob')}
+          defaultFilteredValue={getDefaultFilter('YOB', filters, 'eq')}
           filterDropdown={(props) => (
             <FilterDropdown {...props}>
-              <Input
+              <InputNumber
                 style={{ width: '100%' }}
-                placeholder={t('users.filter.phone.placeholder')}
+                placeholder={t('users.filter.yob.placeholder')}
               />
             </FilterDropdown>
           )}
         />
         <Table.Column
-          key="address"
-          dataIndex="address"
-          title={t('users.fields.address')}
-          defaultFilteredValue={getDefaultFilter(
-            'address',
-            filters,
-            'contains',
-          )}
-          filterDropdown={(props) => (
-            <FilterDropdown {...props}>
-              <Input
-                style={{ width: '100%' }}
-                placeholder={t('users.filter.address.placeholder')}
-              />
-            </FilterDropdown>
-          )}
-        />
-        <Table.Column
-          key="status"
-          dataIndex="status"
-          title={t('users.fields.status.title')}
-          render={(value) => <UserStatus value={value} />}
-          sorter
-          defaultSortOrder={getDefaultSortOrder('status', sorters)}
-          filterDropdown={(props) => (
-            <FilterDropdown {...props}>
-              <Select
-                style={{ width: '100%' }}
-                placeholder={t('users.filter.status.placeholder')}
-              >
-                <Select.Option value={1}>
-                  {t('users.fields.status.active')}
-                </Select.Option>
-                <Select.Option value={0}>
-                  {t('users.fields.status.inactive')}
-                </Select.Option>
-              </Select>
-            </FilterDropdown>
+          key="isAdmin"
+          dataIndex="isAdmin"
+          title={t('users.fields.isAdmin')}
+          render={(value) => (
+            <Typography.Text>{value ? 'Admin' : 'User'}</Typography.Text>
           )}
         />
         <Table.Column<IUser>
@@ -220,7 +170,7 @@ export const CustomerList = ({ children }: PropsWithChildren) => {
               icon={<EyeOutlined />}
               onClick={() => {
                 return go({
-                  to: `${showUrl('customers', record.id)}`,
+                  to: `${showUrl('members', record._id)}`,
                   query: {
                     to: pathname,
                   },

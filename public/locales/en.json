@@ -136,9 +136,9 @@
       "title": "Title",
       "products": "Products",
       "isActive": {
-        "label": "Status",
         "0": "Invisible",
-        "1": "Visible"
+        "1": "Visible",
+        "label": "Status"
       }
     }
   },
@@ -415,7 +415,10 @@
       "brand": "Brand",
       "imgUrl": {
         "label": "Images"
-      }
+      },
+      "image": "Image",
+      "watchName": "Watch Name",
+      "watchDescription": "Description"
     },
     "filter": {
       "title": "Filters",
@@ -450,11 +453,24 @@
       },
       "status": {
         "placeholder": "Placeholder"
-      }
+      },
+      "allBrands": "All"
     },
     "actions": {
-      "add": "Add new product",
-      "edit": "Edit product"
+      "add": "Add new watch",
+      "edit": "Edit watch"
+    },
+    "errors": {
+      "image": {
+        "required": "Image is required",
+        "url": "Error image"
+      },
+      "watchName": {
+        "required": "Watch name is required"
+      },
+      "price": {
+        "required": "Price"
+      }
     }
   },
   "reviews": {
@@ -572,8 +588,17 @@
       "status": {
         "title": "Status",
         "active": "Active",
-        "inactive": "Inactive"
-      }
+        "inactive": "Inactive",
+        "label": "Role",
+        "isAdmin": "Admin",
+        "notAdmin": "User"
+      },
+      "YOB": "Year of Birth",
+      "membername": {
+        "label": "Name"
+      },
+      "isAdmin": "Is Admin?",
+      "yob": "Year of Birthday"
     },
     "filter": {
       "title": "Filters",
@@ -613,6 +638,19 @@
     "addresses": {
       "addresses": "Addresses",
       "address": "Address"
+    }
+  },
+  "brands": {
+    "fields": {
+      "brandName": "Brand",
+      "products": "Watches",
+      "createdAt": "Create At",
+      "updatedAt": "Update At",
+      "_id": "ID"
+    },
+    "actions": {
+      "edit": "Edit Brand",
+      "add": "Add Brand"
     }
   }
 }

@@ -4,8 +4,6 @@ import '@refinedev/antd/dist/reset.css';
 import {
   DashboardOutlined,
   ProductOutlined,
-  ShopOutlined,
-  ShoppingOutlined,
   TagsOutlined,
   UserOutlined,
 } from '@ant-design/icons';
@@ -30,22 +28,18 @@ import { BrowserRouter, Outlet, Route, Routes } from 'react-router-dom';
 
 import { authProvider } from './authProvider';
 import { Header, Title } from './components';
-import { BikeWhiteIcon } from './components/icons';
 import { ConfigProvider } from './context';
 import { useAutoLoginForDemo } from './hooks';
 import { AuthPage } from './pages/auth';
-import { CategoryList } from './pages/categories';
-import { CourierCreate, CourierEdit, CourierList } from './pages/couriers';
+import { BrandCreate, BrandEdit, BrandList, BrandShow } from './pages/brands';
 import { CustomerList, CustomerShow } from './pages/customers';
 import { DashboardPage } from './pages/dashboard';
-import { OrderList, OrderShow } from './pages/orders';
 import {
   ProductCreate,
   ProductEdit,
   ProductList,
   ProductShow,
 } from './pages/products';
-import { StoreCreate, StoreEdit, StoreList } from './pages/stores';
 import { dataProvider } from './rest-data-provider';
 
 interface TitleHandlerOptions {
@@ -105,55 +99,31 @@ const App: React.FC = () => {
                   },
                 },
                 {
-                  name: 'orders',
-                  list: '/orders',
-                  show: '/orders/:id',
-                  meta: {
-                    icon: <ShoppingOutlined />,
-                  },
-                },
-                {
-                  name: 'customers',
-                  list: '/customers',
-                  show: '/customers/:id',
+                  name: 'members',
+                  list: '/members',
+                  show: '/members/:id',
                   meta: {
                     icon: <UserOutlined />,
                   },
                 },
                 {
-                  name: 'products',
-                  list: '/products',
-                  create: '/products/new',
-                  edit: '/products/:id/edit',
-                  show: '/products/:id',
+                  name: 'watches',
+                  list: '/watches',
+                  create: '/watches/new',
+                  edit: '/watches/:id/edit',
+                  show: '/watches/:id',
                   meta: {
                     icon: <ProductOutlined />,
                   },
                 },
                 {
-                  name: 'categories',
-                  list: '/categories',
+                  name: 'brands',
+                  list: '/brands',
+                  create: '/brands/new',
+                  edit: '/brands/:id/edit',
+                  show: '/brands/:id',
                   meta: {
                     icon: <TagsOutlined />,
-                  },
-                },
-                {
-                  name: 'stores',
-                  list: '/stores',
-                  create: '/stores/new',
-                  edit: '/stores/:id/edit',
-                  meta: {
-                    icon: <ShopOutlined />,
-                  },
-                },
-                {
-                  name: 'couriers',
-                  list: '/couriers',
-                  create: '/couriers/new',
-                  edit: '/couriers/:id/edit',
-                  show: '/couriers/:id',
-                  meta: {
-                    icon: <BikeWhiteIcon />,
                   },
                 },
               ]}
@@ -181,13 +151,8 @@ const App: React.FC = () => {
                 >
                   <Route index element={<DashboardPage />} />
 
-                  <Route path="/orders">
-                    <Route index element={<OrderList />} />
-                    <Route path=":id" element={<OrderShow />} />
-                  </Route>
-
                   <Route
-                    path="/customers"
+                    path="/members"
                     element={
                       <CustomerList>
                         <Outlet />
@@ -198,7 +163,7 @@ const App: React.FC = () => {
                   </Route>
 
                   <Route
-                    path="/products"
+                    path="/watches"
                     element={
                       <ProductList>
                         <Outlet />
@@ -209,28 +174,17 @@ const App: React.FC = () => {
                     <Route path=":id" element={<ProductShow />} />
                     <Route path=":id/edit" element={<ProductEdit />} />
                   </Route>
-
-                  <Route path="/stores">
-                    <Route index element={<StoreList />} />
-                    <Route path="new" element={<StoreCreate />} />
-                    <Route path=":id/edit" element={<StoreEdit />} />
-                  </Route>
-
-                  <Route path="/categories" element={<CategoryList />} />
-
-                  <Route path="/couriers">
-                    <Route
-                      path=""
-                      element={
-                        <CourierList>
-                          <Outlet />
-                        </CourierList>
-                      }
-                    >
-                      <Route path="new" element={<CourierCreate />} />
-                    </Route>
-
-                    <Route path=":id/edit" element={<CourierEdit />} />
+                  <Route
+                    path="/brands"
+                    element={
+                      <BrandList>
+                        <Outlet />
+                      </BrandList>
+                    }
+                  >
+                    <Route path="new" element={<BrandCreate />} />
+                    <Route path=":id" element={<BrandShow />} />
+                    <Route path=":id/edit" element={<BrandEdit />} />
                   </Route>
                 </Route>
 
@@ -248,8 +202,8 @@ const App: React.FC = () => {
                         type="login"
                         formProps={{
                           initialValues: {
-                            email: 'demo@outfit4rent.dev',
-                            password: 'demodemo',
+                            email: 'admin@gmail.com',
+                            password: '1234',
                           },
                         }}
                       />

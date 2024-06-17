@@ -15,9 +15,8 @@ import {
 import { useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
 
-import type { ICategory, IProductList } from '../../../interfaces';
+import type { IBrand, IWatches } from '../../../interfaces';
 import { PaginationTotal } from '../../paginationTotal';
-import { ProductStatus } from '../status';
 import { useStyles } from './styled';
 
 export const ProductListCard = () => {
@@ -32,7 +31,7 @@ export const ProductListCard = () => {
     listProps: productListProps,
     filters,
     setFilters,
-  } = useSimpleList<IProductList, HttpError>({
+  } = useSimpleList<IWatches, HttpError>({
     pagination: {
       current: 1,
       pageSize: 12,
@@ -40,7 +39,7 @@ export const ProductListCard = () => {
     filters: {
       initial: [
         {
-          field: 'category.id',
+          field: 'brand._id',
           operator: 'in',
           value: [],
         },
@@ -48,48 +47,48 @@ export const ProductListCard = () => {
     },
   });
 
-  const { data: categoryData, isLoading: categoryIsLoading } = useList<
-    ICategory,
+  const { data: brandData, isLoading: brandIsLoading } = useList<
+    IBrand,
     HttpError
   >({
-    resource: 'categories',
+    resource: 'brands',
     pagination: {
       mode: 'off',
     },
   });
-  const categories = categoryData?.data || [];
+  const brands = brandData?.data || [];
 
-  const categoryFilters = useMemo(() => {
+  const brandFilters = useMemo(() => {
     const foundFilter = filters.find((filterItem) => {
       if ('field' in filterItem) {
-        return filterItem.field === 'category.id';
+        return filterItem.field === 'brand';
       }
 
       return false;
     });
 
-    const filterValues = foundFilter?.value?.map(Number);
+    const filterValues = foundFilter?.value?.map(String);
 
     return {
       operator: foundFilter?.operator || 'in',
-      value: (filterValues || []) as Array<number>,
+      value: (filterValues || []) as Array<string>,
     };
   }, [filters]).value;
 
-  const hasCategoryFilter = categoryFilters?.length > 0;
+  const hasBrandFilter = brandFilters?.length > 0;
 
-  const handleOnTagClick = (categoryId: number) => {
-    const newFilters = categoryFilters;
-    const hasCurrentFilter = newFilters.includes(categoryId);
+  const handleOnTagClick = (brandId: string) => {
+    const newFilters = brandFilters;
+    const hasCurrentFilter = newFilters.includes(brandId);
     if (hasCurrentFilter) {
-      newFilters.splice(newFilters.indexOf(categoryId), 1);
+      newFilters.splice(newFilters.indexOf(brandId), 1);
     } else {
-      newFilters.push(categoryId);
+      newFilters.push(brandId);
     }
 
     setFilters([
       {
-        field: 'category.id',
+        field: 'brand',
         operator: 'in',
         value: newFilters,
       },
@@ -109,40 +108,38 @@ export const ProductListCard = () => {
       >
         <Tag
           style={{ padding: '4px 10px 4px 10px', cursor: 'pointer' }}
-          color={hasCategoryFilter ? undefined : token.colorPrimary}
+          color={hasBrandFilter ? undefined : token.colorPrimary}
           icon={<TagOutlined />}
           onClick={() => {
             setFilters([
               {
-                field: 'category.id',
+                field: 'brand',
                 operator: 'in',
                 value: [],
               },
             ]);
           }}
         >
-          {t('products.filter.allCategories.label')}
+          {t('products.filter.allBrands')}
         </Tag>
-        {!categoryIsLoading &&
-          categories.map((category) => (
+        {!brandIsLoading &&
+          brands.map((brand) => (
             <Tag
-              key={category.id}
-              color={
-                categoryFilters?.includes(category.id) ? 'orange' : undefined
-              }
+              key={brand._id}
+              color={brandFilters?.includes(brand._id) ? 'orange' : undefined}
               style={{
                 padding: '4px 10px 4px 10px',
                 cursor: 'pointer',
               }}
               onClick={() => {
-                handleOnTagClick(category.id);
+                handleOnTagClick(brand._id);
               }}
             >
-              {category.name}
+              {brand.brandName}
             </Tag>
           ))}
 
-        {categoryIsLoading &&
+        {brandIsLoading &&
           Array.from({ length: 10 }).map((_, index) => (
             <Skeleton.Button
               key={index}
@@ -160,7 +157,7 @@ export const ProductListCard = () => {
         pagination={{
           ...productListProps.pagination,
           showTotal: (total) => (
-            <PaginationTotal total={total} entityName={'products'} />
+            <PaginationTotal total={total} entityName={'watches'} />
           ),
         }}
         grid={{
@@ -195,7 +192,7 @@ export const ProductListCard = () => {
                   <Tag
                     onClick={() => {
                       return go({
-                        to: `${showUrl('products', item.id)}`,
+                        to: `${showUrl('watches', item._id)}`,
                         query: {
                           to: pathname,
                         },
@@ -211,8 +208,8 @@ export const ProductListCard = () => {
                     View
                   </Tag>
                   <img
-                    src={item.imgUrl || 'default-image-url.jpg'}
-                    alt={`Product image ${item.id}`}
+                    src={item.image || 'default-image-url.jpg'}
+                    alt={`Watch image ${item._id}`}
                     style={{
                       aspectRatio: 288 / 160,
                       objectFit: 'cover',
@@ -228,13 +225,9 @@ export const ProductListCard = () => {
                     padding: '0 16px',
                   }}
                 >
-                  <Typography.Text key="category.title">
-                    {item.category}
+                  <Typography.Text key="brand.title">
+                    {item.brand?.brandName}
                   </Typography.Text>
-                  <ProductStatus
-                    key="status"
-                    value={item.status === '1' ? 'true' : 'false'}
-                  />
                 </Flex>,
               ]}
             >
@@ -245,10 +238,10 @@ export const ProductListCard = () => {
                       level={5}
                       ellipsis={{
                         rows: 1,
-                        tooltip: item.name,
+                        tooltip: item.watchName,
                       }}
                     >
-                      {item.name}
+                      {item.watchName}
                     </Typography.Title>
 
                     <NumberField
@@ -264,7 +257,7 @@ export const ProductListCard = () => {
                     />
                   </Flex>
                 }
-                description={item.description}
+                description={item.watchDescription}
               />
             </Card>
           </List.Item>

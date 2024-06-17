@@ -1,12 +1,6 @@
-import { UploadOutlined } from '@ant-design/icons';
-import {
-  getValueFromEvent,
-  SaveButton,
-  useDrawerForm,
-  useSelect,
-} from '@refinedev/antd';
+import { SaveButton, useDrawerForm, useSelect } from '@refinedev/antd';
 import type { BaseKey } from '@refinedev/core';
-import { useApiUrl, useGetToPath, useGo, useTranslate } from '@refinedev/core';
+import { useGetToPath, useGo, useTranslate } from '@refinedev/core';
 import {
   Avatar,
   Button,
@@ -15,14 +9,12 @@ import {
   Grid,
   Input,
   InputNumber,
-  Segmented,
   Select,
   Spin,
-  Upload,
 } from 'antd';
 import { useSearchParams } from 'react-router-dom';
 
-import type { IBrand, ICategory, IProductDetail } from '../../../interfaces';
+import type { IBrand, IWatches } from '../../../interfaces';
 import { Drawer } from '../../drawer';
 import { useStyles } from './styled';
 
@@ -38,14 +30,13 @@ export const ProductDrawerForm = (props: Props) => {
   const [searchParameters] = useSearchParams();
   const go = useGo();
   const t = useTranslate();
-  const apiUrl = useApiUrl();
   const breakpoint = Grid.useBreakpoint();
-  const { styles, theme } = useStyles();
+  const { styles } = useStyles();
 
   const { drawerProps, formProps, close, saveButtonProps, formLoading } =
-    useDrawerForm<IProductDetail>({
-      resource: 'products',
-      id: props?.id, // when undefined, id will be read from the URL.
+    useDrawerForm<IWatches>({
+      resource: 'watches',
+      id: props?.id,
       action: props.action,
       redirect: false,
       onMutationSuccess: () => {
@@ -53,14 +44,13 @@ export const ProductDrawerForm = (props: Props) => {
       },
     });
 
-  const { selectProps: categorySelectProps } = useSelect<ICategory>({
-    resource: 'categories',
-  });
   const { selectProps: brandSelectProps } = useSelect<IBrand>({
     resource: 'brands',
+    optionLabel: 'brandName',
+    optionValue: '_id',
   });
 
-  const onDrawerCLose = () => {
+  const onDrawerClose = () => {
     close();
 
     if (props?.onClose) {
@@ -85,9 +75,8 @@ export const ProductDrawerForm = (props: Props) => {
     });
   };
 
-  const images = Form.useWatch('images', formProps.form);
-  const image = images?.[0] || null;
-  const previewImageURL = image?.url || image?.response?.url;
+  const imageUrl = Form.useWatch('image', formProps.form);
+
   const title = props.action === 'edit' ? null : t('products.actions.add');
 
   return (
@@ -97,91 +86,68 @@ export const ProductDrawerForm = (props: Props) => {
       title={title}
       width={breakpoint.sm ? '736px' : '100%'}
       zIndex={1001}
-      onClose={onDrawerCLose}
+      onClose={onDrawerClose}
     >
       <Spin spinning={formLoading}>
-        <Form {...formProps} layout="vertical">
+        <Form
+          {...formProps}
+          layout="vertical"
+          initialValues={formProps.initialValues?.watch}
+        >
           <Form.Item
-            name="images"
-            valuePropName="fileList"
-            getValueFromEvent={getValueFromEvent}
-            style={{
-              margin: 0,
-            }}
+            label={t('products.fields.image')}
+            name="image"
+            className={styles.formItem}
             rules={[
               {
                 required: true,
+                message: t('products.errors.image.required'),
+              },
+              {
+                type: 'url',
+                message: t('products.errors.image.url'),
               },
             ]}
           >
-            <Upload.Dragger
-              name="file"
-              action={`${apiUrl}/media/upload`}
-              maxCount={3}
-              multiple
-              accept=".png,.jpg,.jpeg"
-              className={styles.uploadDragger}
-              showUploadList={true}
-            >
-              <Flex
-                vertical
-                align="center"
-                justify="center"
-                style={{
-                  position: 'relative',
-                  height: '100%',
-                }}
-              >
-                <Avatar
-                  shape="square"
-                  style={{
-                    aspectRatio: 1,
-                    objectFit: 'contain',
-                    width: previewImageURL ? '100%' : '48px',
-                    height: previewImageURL ? '100%' : '48px',
-                    marginTop: previewImageURL ? undefined : 'auto',
-                    transform: previewImageURL ? undefined : 'translateY(50%)',
-                  }}
-                  src={previewImageURL || '/images/product-default-img.png'}
-                  alt="Product Image"
-                />
-                <Button
-                  icon={<UploadOutlined />}
-                  style={{
-                    marginTop: 'auto',
-                    marginBottom: '16px',
-                    backgroundColor: theme.colorBgContainer,
-                    ...(!!previewImageURL && {
-                      position: 'absolute',
-                      bottom: 0,
-                    }),
-                  }}
-                >
-                  {t('products.fields.images.description')}
-                </Button>
-              </Flex>
-            </Upload.Dragger>
+            <Input />
           </Form.Item>
+          <Flex vertical align="center" justify="center">
+            <Avatar
+              shape="square"
+              style={{
+                aspectRatio: 1,
+                objectFit: 'contain',
+                width: imageUrl ? '100%' : '48px',
+                height: imageUrl ? '100%' : '48px',
+                marginTop: imageUrl ? undefined : 'auto',
+                transform: imageUrl ? undefined : 'translateY(50%)',
+              }}
+              src={imageUrl || '/images/product-default-img.png'}
+              alt="Product Image"
+            />
+          </Flex>
           <Flex vertical>
             <Form.Item
-              label={t('products.fields.name')}
-              name="name"
+              label={t('products.fields.watchName')}
+              name="watchName"
               className={styles.formItem}
               rules={[
                 {
                   required: true,
+                  message: t('products.errors.watchName.required'),
                 },
               ]}
             >
               <Input />
             </Form.Item>
             <Form.Item
-              label={t('products.fields.description')}
-              name="description"
+              label={t('products.fields.watchDescription')}
+              name="watchDescription"
               className={styles.formItem}
               rules={[
                 {
                   required: true,
+                  message: t('products.errors.watchDescription.required'),
                 },
               ]}
             >
@@ -194,55 +160,24 @@ export const ProductDrawerForm = (props: Props) => {
               rules={[
                 {
                   required: true,
+                  message: t('products.errors.price.required'),
                 },
               ]}
             >
               <InputNumber prefix={'$'} style={{ width: '150px' }} />
             </Form.Item>
             <Form.Item
-              label={t('products.fields.category')}
-              name={['category', 'id']}
-              className={styles.formItem}
-              rules={[
-                {
-                  required: true,
-                },
-              ]}
-            >
-              <Select {...categorySelectProps} />
-            </Form.Item>
-            <Form.Item
               label={t('products.fields.brand')}
-              name={['brand', 'id']}
+              name={['brand', '_id']}
               className={styles.formItem}
               rules={[
                 {
                   required: true,
+                  message: t('products.errors.brand.required'),
                 },
               ]}
             >
               <Select {...brandSelectProps} />
-            </Form.Item>
-            <Form.Item
-              label={t('products.fields.isActive.label')}
-              name="isActive"
-              className={styles.formItem}
-              initialValue={true}
-            >
-              <Segmented
-                block
-                size="large"
-                options={[
-                  {
-                    label: t('products.fields.isActive.true'),
-                    value: true,
-                  },
-                  {
-                    label: t('products.fields.isActive.false'),
-                    value: false,
-                  },
-                ]}
-              />
             </Form.Item>
             <Flex
               align="center"
@@ -251,7 +186,7 @@ export const ProductDrawerForm = (props: Props) => {
                 padding: '16px 16px 0px 16px',
               }}
             >
-              <Button onClick={onDrawerCLose}>Cancel</Button>
+              <Button onClick={onDrawerClose}>Cancel</Button>
               <SaveButton
                 {...saveButtonProps}
                 htmlType="submit"

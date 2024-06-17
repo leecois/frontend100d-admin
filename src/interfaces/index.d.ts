@@ -1,39 +1,18 @@
 import type { Dayjs } from 'dayjs';
 
-export interface IOrderChart {
-  count: number;
-  status:
-    | 'waiting'
-    | 'ready'
-    | 'on the way'
-    | 'delivered'
-    | 'could not be delivered';
-}
-
-export interface IOrderTotalCount {
-  total: number;
-  totalDelivered: number;
-}
-
-export interface ISalesChart {
-  date: string;
-  title?: 'Order Count' | 'Order Amount';
-  value: number;
-}
-
-export interface IOrderStatus {
-  id: number;
-  text: 'Pending' | 'Ready' | 'On The Way' | 'Delivered' | 'Cancelled';
-}
-
+// interfaces.ts
 export interface IUser {
-  id: number;
-  name: string;
+  _id: string;
+  membername: string;
   email: string;
-  picture: string;
-  phone: string;
-  address: string;
-  status: number;
+  YOB?: number;
+  isAdmin: boolean;
+  authentication: {
+    _id: string;
+  };
+  __v: number;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface IIdentity {
@@ -42,87 +21,12 @@ export interface IIdentity {
   avatar: string;
 }
 
-export interface IAddress {
-  text: string;
-  coordinate: [number, number];
-}
-
-export interface IFile {
-  name: string;
-  percent: number;
-  size: number;
-  status: 'error' | 'success' | 'done' | 'uploading' | 'removed';
-  type: string;
-  uid: string;
-  url: string;
-}
-
-export interface IEvent {
-  date: string;
-  status: string;
-}
-
-export interface IStore {
-  id: number;
-  title: string;
-  isActive: boolean;
-  createdAt: string;
-  gsm: string;
-  email: string;
-  address: IAddress;
-  products: Array<IProduct>;
-}
-
-export interface ICourierStatus {
-  id: number;
-  text: 'Available' | 'Offline' | 'On delivery';
-}
-
-export interface ICourier {
-  id: number;
-  name: string;
-  surname: string;
-  email: string;
-  gender: string;
-  gsm: string;
-  createdAt: string;
-  accountNumber: string;
-  licensePlate: string;
-  address: string;
-  avatar: Array<IFile>;
-  store: IStore;
-  status: ICourierStatus;
-  vehicle: IVehicle;
-}
-export interface IPartner {
-  id: number;
-  name: string;
-  address: string;
-  phone: string;
-  email: string;
-  areaId: number;
-  status: number;
-}
-
-export interface IOrder {
-  id: number;
-  user: IUser;
-  createdAt: string;
-  products: Array<IProduct>;
-  status: IOrderStatus;
-  adress: IAddress;
-  store: IStore;
-  courier: ICourier;
-  events: Array<IEvent>;
-  orderNumber: number;
-  amount: number;
-}
-
-// src/interfaces/index.ts
-
-export interface IBrand {
-  id: number;
-  name: string;
+export interface IUserFilterVariables {
+  name?: string;
+  email?: string;
+  YOB?: number;
+  isAdmin?: boolean;
+  _id?: string;
 }
 
 export interface IImage {
@@ -130,35 +34,59 @@ export interface IImage {
   link: string;
 }
 
-export interface IProductDetail {
-  id: number;
-  name: string;
-  price: number;
-  size: string;
-  deposit: number;
-  description: string;
-  status: number;
-  isUsed: string;
-  category: ICategory;
-  brand: IBrand;
-  quantity: number;
-  availableQuantity: number;
-  type: string;
-  images: IImage[];
+// Define the Brand interface
+export interface IBrand {
+  _id: string;
+  brandName: string;
+  createdAt: Date;
+  updatedAt: Date;
+  __v: number;
 }
 
-export interface IProductList {
-  id: number;
-  name: string;
+// Define the Watch interface
+export interface IWatches {
+  _id: string;
+  watchName: string;
+  image: string;
   price: number;
-  size: string;
-  deposit: number;
-  description: string;
-  status: string;
-  category: string;
-  brand: string;
-  type: string;
-  imgUrl: string;
+  automatic: boolean;
+  watchDescription: string;
+  brand: IBrand;
+  createdAt: Date;
+  updatedAt: Date;
+  __v: number;
+}
+
+// Define the Author interface for comments
+export interface IAuthor {
+  _id: string;
+  membername: string;
+  email: string;
+  YOB: number;
+  isAdmin: boolean;
+  authentication: {
+    _id: string;
+  };
+  __v: number;
+  updatedAt: Date;
+}
+
+// Define the Comment interface
+export interface IComment {
+  _id: string;
+  rating: number;
+  content: string;
+  author: IAuthor;
+  watch: string;
+  createdAt: Date;
+  updatedAt: Date;
+  __v: number;
+}
+
+// Define the ProductDetail interface, which includes watch details and comments
+export interface IProductDetail {
+  watch: IWatches;
+  comments: IComment[];
 }
 
 export interface ICategory {
@@ -178,14 +106,6 @@ export interface IOrderFilterVariables {
   status?: string;
 }
 
-export interface IUserFilterVariables {
-  q: string;
-  status: boolean;
-  createdAt: [Dayjs, Dayjs];
-  gender: string;
-  isActive: boolean;
-}
-
 export interface IReview {
   id: number;
   content: string;
@@ -194,19 +114,4 @@ export interface IReview {
   customerId: number;
   productId: number;
   reviewImages: string[];
-}
-
-export type IVehicle = {
-  model: string;
-  vehicleType: string;
-  engineSize: number;
-  color: string;
-  year: number;
-  id: number;
-};
-
-export interface ITrendingProducts {
-  id: number;
-  product: IProduct;
-  orderCount: number;
 }

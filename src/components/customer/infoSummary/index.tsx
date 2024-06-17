@@ -1,4 +1,4 @@
-import { Avatar, Flex, Typography } from 'antd';
+import { Flex, Typography } from 'antd';
 
 import type { IUser } from '../../../interfaces';
 
@@ -9,16 +9,15 @@ type Props = {
 export const CustomerInfoSummary = ({ customer }: Props) => {
   return (
     <Flex align="center" gap={32}>
-      <Avatar size={96} src={customer?.picture} />
       <Flex vertical>
-        <Typography.Text type="secondary">#{customer?.id}</Typography.Text>
+        <Typography.Text type="secondary">#{customer?._id}</Typography.Text>
         <Typography.Title
           level={3}
           style={{
             margin: 0,
           }}
         >
-          {customer?.name}
+          {customer?.membername}
         </Typography.Title>
       </Flex>
     </Flex>

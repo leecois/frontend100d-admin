@@ -27,7 +27,7 @@ import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
 import { useConfigProvider } from '../../context';
-import type { IIdentity, IOrder, IProductList, IStore } from '../../interfaces';
+import type { IIdentity, IUser, IWatches } from '../../interfaces';
 import { IconMoon, IconSun } from '../icons';
 import { useStyles } from './styled';
 
@@ -85,8 +85,8 @@ export const Header: React.FC = () => {
   const [value, setValue] = useState<string>('');
   const [options, setOptions] = useState<Array<IOptions>>([]);
 
-  const { refetch: refetchOrders } = useList<IOrder>({
-    resource: 'orders',
+  const { refetch: refetchWatches } = useList<IWatches>({
+    resource: 'watches',
     config: {
       filters: [{ field: 'q', operator: 'contains', value }],
     },
@@ -95,10 +95,9 @@ export const Header: React.FC = () => {
       onSuccess: (data) => {
         const orderOptionGroup = data.data.map((item) =>
           renderItem(
-            `${item.store.title} / #${item.orderNumber}`,
-            item?.products?.[0].images?.[0]?.url ||
-              '/images/default-order-img.png',
-            `/orders/${item.id}`,
+            `${item.watchName} / #${item.brand}`,
+            item?.image?.[0] || '/images/default-order-img.png',
+            `/watches/${item._id}`,
           ),
         );
         if (orderOptionGroup.length > 0) {
@@ -114,8 +113,8 @@ export const Header: React.FC = () => {
     },
   });
 
-  const { refetch: refetchStores } = useList<IStore>({
-    resource: 'stores',
+  const { refetch: refetchMember } = useList<IUser>({
+    resource: 'members',
     config: {
       filters: [{ field: 'q', operator: 'contains', value }],
     },
@@ -123,7 +122,7 @@ export const Header: React.FC = () => {
       enabled: false,
       onSuccess: (data) => {
         const storeOptionGroup = data.data.map((item) =>
-          renderItem(item.title, '', `/stores/${item.id}/edit`),
+          renderItem(item.membername, '', `/members/${item._id}`),
         );
         if (storeOptionGroup.length > 0) {
           setOptions((previousOptions) => [
@@ -138,39 +137,10 @@ export const Header: React.FC = () => {
     },
   });
 
-  const { refetch: refetchCouriers } = useList<IProductList>({
-    resource: 'products',
-    config: {
-      filters: [{ field: 'q', operator: 'contains', value }],
-    },
-    queryOptions: {
-      enabled: false,
-      onSuccess: (data) => {
-        const courierOptionGroup = data.data.map((item) =>
-          renderItem(
-            `${item.name} ${item.category}`,
-            item.imgUrl[0],
-            `/products/${item.id}`,
-          ),
-        );
-        if (courierOptionGroup.length > 0) {
-          setOptions((previousOptions) => [
-            ...previousOptions,
-            {
-              label: renderTitle(t('couriers.couriers')),
-              options: courierOptionGroup,
-            },
-          ]);
-        }
-      },
-    },
-  });
-
   useEffect(() => {
     setOptions([]);
-    refetchOrders();
-    refetchStores();
-    refetchCouriers();
+    refetchMember();
+    refetchWatches();
   }, [value]);
 
   const menuItems: MenuProps['items'] = [...(i18n.languages || [])]

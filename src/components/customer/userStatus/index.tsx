@@ -6,21 +6,19 @@ import React from 'react';
 import type { IUser } from '../../../interfaces';
 
 type Props = {
-  value: IUser['status'];
+  value: IUser['isAdmin'];
 };
 
 export const UserStatus = ({ value }: Props) => {
   const t = useTranslate();
   const { token } = theme.useToken();
 
-  const statusText =
-    value === 1
-      ? t('users.fields.status.active')
-      : t('users.fields.status.inactive');
-  const statusIcon =
-    value === 1 ? <CheckCircleOutlined /> : <PauseCircleOutlined />;
-  const statusColor = value === 1 ? 'green' : 'default';
-  const textColor = value === 1 ? token.colorSuccess : token.colorTextTertiary;
+  const statusText = value
+    ? t('users.fields.status.isAdmin')
+    : t('users.fields.status.notAdmin');
+  const statusIcon = value ? <CheckCircleOutlined /> : <PauseCircleOutlined />;
+  const statusColor = value ? 'green' : 'default';
+  const textColor = value ? token.colorSuccess : token.colorTextTertiary;
 
   return (
     <Tag

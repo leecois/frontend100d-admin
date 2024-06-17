@@ -5,7 +5,6 @@ import {
   useGetToPath,
   useGo,
   useNavigation,
-  useOne,
   useShow,
   useTranslate,
 } from '@refinedev/core';
@@ -22,10 +21,9 @@ import {
 } from 'antd';
 import { useSearchParams } from 'react-router-dom';
 
-import type { IBrand, ICategory, IProductDetail } from '../../../interfaces';
+import type { IProductDetail } from '../../../interfaces';
 import { Drawer } from '../../drawer';
 import { ProductReviewTable } from '../review-table';
-import { ProductStatus } from '../status';
 
 type Props = {
   id?: BaseKey;
@@ -43,27 +41,11 @@ export const ProductDrawerShow = (props: Props) => {
   const breakpoint = Grid.useBreakpoint();
 
   const { queryResult } = useShow<IProductDetail, HttpError>({
-    resource: 'products',
-    id: props?.id, // when undefined, id will be read from the URL.
+    resource: 'watches',
+    id: props?.id,
   });
-  const product = queryResult.data?.data;
-
-  const { data: categoryData } = useOne<ICategory, HttpError>({
-    resource: 'categories',
-    id: product?.category?.id,
-    queryOptions: {
-      enabled: !!product?.category?.id,
-    },
-  });
-  const { data: brandData } = useOne<IBrand, HttpError>({
-    resource: 'brands',
-    id: product?.brand?.id,
-    queryOptions: {
-      enabled: !!product?.brand?.id,
-    },
-  });
-  const category = categoryData?.data;
-  const brand = brandData?.data;
+  const watch = queryResult.data?.data?.watch;
+  const comments = queryResult.data?.data?.comments || [];
 
   const handleDrawerClose = () => {
     if (props?.onClose) {
@@ -106,8 +88,8 @@ export const ProductDrawerShow = (props: Props) => {
             margin: '16px auto',
             borderRadius: '8px',
           }}
-          src={product?.images?.[0]?.link}
-          alt={product?.images?.[0]?.link}
+          src={watch?.image}
+          alt={watch?.watchName}
         />
       </Flex>
       <Flex
@@ -122,9 +104,9 @@ export const ProductDrawerShow = (props: Props) => {
             padding: '16px',
           }}
         >
-          <Typography.Title level={5}>{product?.name}</Typography.Title>
+          <Typography.Title level={5}>{watch?.watchName}</Typography.Title>
           <Typography.Text type="secondary">
-            {product?.description}
+            {watch?.watchDescription}
           </Typography.Text>
         </Flex>
         <Divider
@@ -143,7 +125,7 @@ export const ProductDrawerShow = (props: Props) => {
               ),
               value: (
                 <NumberField
-                  value={product?.price || 0}
+                  value={watch?.price || 0}
                   options={{
                     style: 'currency',
                     currency: 'USD',
@@ -154,29 +136,11 @@ export const ProductDrawerShow = (props: Props) => {
             {
               label: (
                 <Typography.Text type="secondary">
-                  {t('products.fields.category')}
-                </Typography.Text>
-              ),
-              value: <Typography.Text>{category?.name}</Typography.Text>,
-            },
-            {
-              label: (
-                <Typography.Text type="secondary">
                   {t('products.fields.brand')}
                 </Typography.Text>
               ),
-              value: <Typography.Text>{brand?.name}</Typography.Text>,
-            },
-            {
-              label: (
-                <Typography.Text type="secondary">
-                  {t('products.fields.isActive.label')}
-                </Typography.Text>
-              ),
               value: (
-                <ProductStatus
-                  value={String(product?.status) === '1' ? 'true' : 'false'}
-                />
+                <Typography.Text>{watch?.brand?.brandName}</Typography.Text>
               ),
             },
           ]}
@@ -204,8 +168,8 @@ export const ProductDrawerShow = (props: Props) => {
       >
         <DeleteButton
           type="text"
-          recordItemId={product?.id}
-          resource="products"
+          recordItemId={watch?._id}
+          resource="watches"
           onSuccess={() => {
             handleDrawerClose();
           }}
@@ -217,9 +181,9 @@ export const ProductDrawerShow = (props: Props) => {
               props.onEdit();
             } else {
               go({
-                to: `${editUrl('products', product?.id || '')}`,
+                to: `${editUrl('watches', watch?._id || '')}`,
                 query: {
-                  to: '/products',
+                  to: '/watches',
                 },
                 options: {
                   keepQuery: true,
@@ -238,7 +202,7 @@ export const ProductDrawerShow = (props: Props) => {
           marginTop: '5px',
         }}
       >
-        <ProductReviewTable product={product} />
+        <ProductReviewTable comments={comments} />
       </Col>
     </Drawer>
   );

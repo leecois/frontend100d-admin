@@ -2,13 +2,13 @@ import { Table } from 'antd';
 
 import type { IComment } from '../../../interfaces';
 
-type ProductReviewTableProps = {
+type CustomerCommentHistoryProps = {
   comments: IComment[];
 };
 
-export const ProductReviewTable: React.FC<ProductReviewTableProps> = ({
+export const CustomerCommentHistory = ({
   comments,
-}) => {
+}: CustomerCommentHistoryProps) => {
   const columns = [
     {
       title: 'Rating',
