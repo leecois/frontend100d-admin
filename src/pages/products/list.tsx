@@ -18,7 +18,6 @@ export const ProductList = ({ children }: PropsWithChildren) => {
 
   const [view, setView] = useState<View>('table');
 
-  // Ensure localStorage is accessed only on the client side
   useEffect(() => {
     const savedView = localStorage.getItem('product-view') as View;
     if (savedView) {
@@ -34,7 +33,7 @@ export const ProductList = ({ children }: PropsWithChildren) => {
       setView(value);
       localStorage.setItem('product-view', value);
     } else {
-      console.error('Unexpected view value:', value);
+      //
     }
   };
 

@@ -21,7 +21,7 @@ import {
 } from 'antd';
 import { useSearchParams } from 'react-router-dom';
 
-import type { IProductDetail } from '../../../interfaces';
+import type { IWatches } from '../../../interfaces';
 import { Drawer } from '../../drawer';
 import { ProductReviewTable } from '../review-table';
 
@@ -40,12 +40,12 @@ export const ProductDrawerShow = (props: Props) => {
   const { token } = theme.useToken();
   const breakpoint = Grid.useBreakpoint();
 
-  const { queryResult } = useShow<IProductDetail, HttpError>({
+  const { queryResult } = useShow<IWatches, HttpError>({
     resource: 'watches',
     id: props?.id,
   });
-  const watch = queryResult.data?.data?.watch;
-  const comments = queryResult.data?.data?.comments || [];
+  const watch = queryResult.data?.data;
+  const comments = watch?.comments || [];
 
   const handleDrawerClose = () => {
     if (props?.onClose) {
@@ -141,6 +141,18 @@ export const ProductDrawerShow = (props: Props) => {
               ),
               value: (
                 <Typography.Text>{watch?.brand?.brandName}</Typography.Text>
+              ),
+            },
+            {
+              label: (
+                <Typography.Text type="secondary">
+                  {t('products.fields.automatic')}
+                </Typography.Text>
+              ),
+              value: (
+                <Typography.Text>
+                  {watch?.automatic ? 'Yes' : 'No'}
+                </Typography.Text>
               ),
             },
           ]}

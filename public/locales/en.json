@@ -106,7 +106,7 @@
     "inTotal": "in total"
   },
   "search": {
-    "placeholder": "Search by Store ID, E-mail, Keyword",
+    "placeholder": "Search by ...",
     "more": "more"
   },
   "status": {
@@ -418,7 +418,8 @@
       },
       "image": "Image",
       "watchName": "Watch Name",
-      "watchDescription": "Description"
+      "watchDescription": "Description",
+      "automatic": "Automatic"
     },
     "filter": {
       "title": "Filters",
@@ -454,7 +455,10 @@
       "status": {
         "placeholder": "Placeholder"
       },
-      "allBrands": "All"
+      "allBrands": "All",
+      "brand": {
+        "placeholder": "select brand"
+      }
     },
     "actions": {
       "add": "Add new watch",

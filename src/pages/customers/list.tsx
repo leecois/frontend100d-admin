@@ -1,24 +1,14 @@
-import { EyeOutlined, SearchOutlined } from '@ant-design/icons';
+import { SearchOutlined } from '@ant-design/icons';
 import { ExportButton, FilterDropdown, List, useTable } from '@refinedev/antd';
 import type { HttpError } from '@refinedev/core';
-import {
-  getDefaultFilter,
-  useExport,
-  useGo,
-  useNavigation,
-  useTranslate,
-} from '@refinedev/core';
-import { Button, Input, InputNumber, Table, theme, Typography } from 'antd';
+import { getDefaultFilter, useExport, useTranslate } from '@refinedev/core';
+import { Input, InputNumber, Table, theme, Typography } from 'antd';
 import type { PropsWithChildren } from 'react';
-import { useLocation } from 'react-router-dom';
 
 import { PaginationTotal } from '../../components';
 import type { IUser, IUserFilterVariables } from '../../interfaces';
 
 export const CustomerList = ({ children }: PropsWithChildren) => {
-  const go = useGo();
-  const { pathname } = useLocation();
-  const { showUrl } = useNavigation();
   const t = useTranslate();
   const { token } = theme.useToken();
 
@@ -160,27 +150,6 @@ export const CustomerList = ({ children }: PropsWithChildren) => {
           title={t('users.fields.isAdmin')}
           render={(value) => (
             <Typography.Text>{value ? 'Admin' : 'User'}</Typography.Text>
-          )}
-        />
-        <Table.Column<IUser>
-          fixed="right"
-          title={t('table.actions')}
-          render={(_, record) => (
-            <Button
-              icon={<EyeOutlined />}
-              onClick={() => {
-                return go({
-                  to: `${showUrl('members', record._id)}`,
-                  query: {
-                    to: pathname,
-                  },
-                  options: {
-                    keepQuery: true,
-                  },
-                  type: 'replace',
-                });
-              }}
-            />
           )}
         />
       </Table>

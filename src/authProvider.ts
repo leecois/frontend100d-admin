@@ -3,7 +3,7 @@ import { notification } from 'antd';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 
-import { disableAutoLogin, enableAutoLogin } from './hooks';
+import { disableAutoLogin } from './hooks';
 
 export const TOKEN_KEY = 'LEECOIS-AUTH';
 
@@ -19,7 +19,6 @@ export const authProvider: AuthProvider = {
       const user = response.data;
       // Check if the user is an admin
       if (user.isAdmin) {
-        enableAutoLogin();
         Cookies.set(TOKEN_KEY, user.authentication.sessionToken, {
           expires: 7,
         });
@@ -92,7 +91,7 @@ export const authProvider: AuthProvider = {
   },
   logout: async () => {
     disableAutoLogin();
-    Cookies.remove(TOKEN_KEY); // Remove the token from the cookie
+    Cookies.remove(TOKEN_KEY);
     return {
       success: true,
       redirectTo: '/login',

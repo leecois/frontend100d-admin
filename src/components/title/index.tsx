@@ -19,12 +19,6 @@ export const Title: React.FC<TitleProps> = ({ collapsed }) => {
           <O4RLogoIcon />
         ) : (
           <Space size={12}>
-            <O4RLogoIcon
-              style={{
-                fontSize: '32px',
-                color: token.colorTextHeading,
-              }}
-            />
             <O4RLogoText
               style={{
                 color: token.colorTextHeading,

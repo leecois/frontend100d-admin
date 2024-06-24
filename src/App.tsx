@@ -32,7 +32,7 @@ import { ConfigProvider } from './context';
 import { useAutoLoginForDemo } from './hooks';
 import { AuthPage } from './pages/auth';
 import { BrandCreate, BrandEdit, BrandList, BrandShow } from './pages/brands';
-import { CustomerList, CustomerShow } from './pages/customers';
+import { CustomerList } from './pages/customers';
 import { DashboardPage } from './pages/dashboard';
 import {
   ProductCreate,
@@ -47,7 +47,7 @@ interface TitleHandlerOptions {
 }
 
 const customTitleHandler = ({ resource }: TitleHandlerOptions): string => {
-  const baseTitle = 'Outfit4Rent';
+  const baseTitle = 'My Watch Store';
   const titleSegment = resource?.name;
   const title = titleSegment ? `${titleSegment} | ${baseTitle}` : baseTitle;
   return title;
@@ -101,7 +101,6 @@ const App: React.FC = () => {
                 {
                   name: 'members',
                   list: '/members',
-                  show: '/members/:id',
                   meta: {
                     icon: <UserOutlined />,
                   },
@@ -158,9 +157,7 @@ const App: React.FC = () => {
                         <Outlet />
                       </CustomerList>
                     }
-                  >
-                    <Route path=":id" element={<CustomerShow />} />
-                  </Route>
+                  ></Route>
 
                   <Route
                     path="/watches"

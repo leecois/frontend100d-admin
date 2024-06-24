@@ -4,6 +4,7 @@ import { useGetToPath, useGo, useTranslate } from '@refinedev/core';
 import {
   Avatar,
   Button,
+  Checkbox,
   Flex,
   Form,
   Grid,
@@ -77,7 +78,10 @@ export const ProductDrawerForm = (props: Props) => {
 
   const imageUrl = Form.useWatch('image', formProps.form);
 
-  const title = props.action === 'edit' ? null : t('products.actions.add');
+  const title =
+    props.action === 'edit'
+      ? t('products.actions.edit')
+      : t('products.actions.add');
 
   return (
     <Drawer
@@ -92,7 +96,7 @@ export const ProductDrawerForm = (props: Props) => {
         <Form
           {...formProps}
           layout="vertical"
-          initialValues={formProps.initialValues?.watch}
+          initialValues={formProps.initialValues}
         >
           <Form.Item
             label={t('products.fields.image')}
@@ -165,6 +169,14 @@ export const ProductDrawerForm = (props: Props) => {
               ]}
             >
               <InputNumber prefix={'$'} style={{ width: '150px' }} />
+            </Form.Item>
+            <Form.Item
+              label={t('products.fields.automatic')}
+              name="automatic"
+              valuePropName="checked"
+              className={styles.formItem}
+            >
+              <Checkbox>{t('products.fields.automatic')}</Checkbox>
             </Form.Item>
             <Form.Item
               label={t('products.fields.brand')}
